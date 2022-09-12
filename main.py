@@ -3,6 +3,8 @@ from telegram.ext import Updater, MessageHandler, Filters, CallbackContext
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
 from telegram import error
 import csv
+import time
+from datetime import datetime
 from db_operations import check_user_status, add_user_data, take_data, change_user_status
 
 
@@ -140,18 +142,15 @@ class Bot:
                 continue
 
     def start(self):
-        # while True:
-        #     h = datetime.now().hour
-        #     m = datetime.now().minute
-        #     if h == 19 and m == 59:
-        #         break
-        #     time.sleep(5)
-        # self.jq.run_repeating(self.warning_message, interval=86400, first=60)
-        # self.jq.run_repeating(self.open_message, interval=86400, first=660)
-        # self.jq.run_repeating(self.close_message, interval=86400, first=4260)
-        self.jq.run_repeating(self.warning_message, interval=86400, first=10)
-        self.jq.run_repeating(self.open_message, interval=86400, first=20)
-        self.jq.run_repeating(self.close_message, interval=86400, first=70)
+        while True:
+            h = datetime.now().hour
+            m = datetime.now().minute
+            if h == 19 and m == 59:
+                break
+            time.sleep(5)
+        self.jq.run_repeating(self.warning_message, interval=86400, first=60)
+        self.jq.run_repeating(self.open_message, interval=86400, first=660)
+        self.jq.run_repeating(self.close_message, interval=86400, first=4260)
         text_handler = MessageHandler(Filters.text, self.text_operator)
         self.dp.add_handler(text_handler)
         self.updater.start_polling()
