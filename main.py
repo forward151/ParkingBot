@@ -1,11 +1,14 @@
 from dotenv import dotenv_values
 from telegram.ext import Updater, MessageHandler, Filters, CallbackContext
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
-from telegram import error
 import csv
 import time
 from datetime import datetime
 from db_operations import check_user_status, add_user_data, take_data, change_user_status
+
+DELTA_TIME = [1, 0, 2]
+START_TIME = [21, 1]
+WEEK_LST = []
 
 
 class Bot:
@@ -14,10 +17,9 @@ class Bot:
         self.users_ids = [1474831001]
         self.result_list = []
         self.user_data = {}
-        self.keys = dotenv_values('tokens.env')
+        self.keys = dotenv_values('local_tokens.env')
         self.tg_token = self.keys['token']
         self.updater = Updater(self.tg_token)
-        self.jq = self.updater.job_queue
         self.dp = self.updater.dispatcher
         self.open = False
         self.max_num = 10
@@ -118,7 +120,7 @@ class Bot:
             try:
                 context.bot.send_message(chat_id=user_id, text='Открыта регистрация на автостоянку',
                                           reply_markup=ReplyKeyboardMarkup(self.add_keyboard))
-            except error.BadRequest:
+            except:
                 continue
 
     def close_message(self, context: CallbackContext):
@@ -127,7 +129,7 @@ class Bot:
             try:
                 context.bot.send_message(chat_id=user_id, text='Регистрация на автостоянку закрыта',
                                           reply_markup=ReplyKeyboardRemove())
-            except error.BadRequest:
+            except:
                 continue
         print(self.result_list)
         self.file_operator()
@@ -138,24 +140,36 @@ class Bot:
             try:
                 context.bot.send_message(chat_id=user_id,
                                          text='Через 10 минут будет открыта регистрация на автостоянку')
-            except error.BadRequest:
+            except:
                 continue
 
     def start(self):
-        while True:
-            h = datetime.now().hour
-            m = datetime.now().minute
-            if h == 19 and m == 59:
-                break
-            time.sleep(5)
-        self.jq.run_repeating(self.warning_message, interval=86400, first=60)
-        self.jq.run_repeating(self.open_message, interval=86400, first=660)
-        self.jq.run_repeating(self.close_message, interval=86400, first=4260)
         text_handler = MessageHandler(Filters.text, self.text_operator)
         self.dp.add_handler(text_handler)
         self.updater.start_polling()
+        print('bot starts')
+        print('bot continue')
+        fst_key = False
+        scd_key = False
+        thd_key = False
+        while True:
+            h = datetime.now().hour
+            m = datetime.now().minute
+            wd = datetime.now().weekday()
+            if h == START_TIME[0] and m == START_TIME[1] and wd not in WEEK_LST and fst_key is False:
+                self.warning_message(self.dp)
+                fst_key = True
+                scd_key = False
+            if h == START_TIME[0] and m == START_TIME[1] + DELTA_TIME[0] and wd not in WEEK_LST and scd_key is False:
+                self.open_message(self.dp)
+                scd_key = True
+                thd_key = False
+            if h == START_TIME[0] + DELTA_TIME[1] and m == START_TIME[1] + DELTA_TIME[2] and wd not in WEEK_LST and thd_key is False:
+                self.close_message(self.dp)
+                thd_key = True
+                fst_key = False
 
-        self.updater.idle()
+            time.sleep(5)
 
 
 if __name__ == '__main__':

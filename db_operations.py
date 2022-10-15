@@ -10,6 +10,10 @@ def add_user_data(user_data):
     con = sqlite3.connect("database.db")
 
     cur = con.cursor()
+    data_list = cur.execute('SELECT * FROM users').fetchall()
+    for i in data_list:
+        if i[0] != id and i[4] == cr:
+            return
     cur.execute("UPDATE users SET name = ?, patronymic = ?, surname = ?,"
                 "car = ?, status = ? WHERE id = ?", (nm, pt, sn, cr, 6, id))
     con.commit()
@@ -54,3 +58,5 @@ def take_data(user_id):
     data = cur.execute('SELECT * FROM users WHERE id=?', (user_id,)).fetchone()
     con.close()
     return data
+
+# add_user_data({'id': 123, 'name': 'asasdsasda', 'patronymic': 'asdfasdf', 'surname': 'ffkdd', 'car': '123asd'})
