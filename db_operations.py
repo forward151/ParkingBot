@@ -7,6 +7,7 @@ def add_user_data(user_data):
     pt = user_data['patronymic']
     cr = user_data['car']
 
+
     con = sqlite3.connect("database.db")
 
     cur = con.cursor()
@@ -19,6 +20,30 @@ def add_user_data(user_data):
     con.commit()
     con.close()
 
+
+def add_date_for_user(user_data, day):
+    id = user_data['id']
+
+    con = sqlite3.connect("database.db")
+
+    cur = con.cursor()
+    if day == 1:
+        d = user_data['monday']
+        cur.execute("UPDATE users SET monday = ? WHERE id = ?", (d, id))
+    if day == 2:
+        d = user_data['tuesday']
+        cur.execute("UPDATE users SET tuesday = ? WHERE id = ?", (d, id))
+    if day == 3:
+        d = user_data['wednesday']
+        cur.execute("UPDATE users SET wednesday = ? WHERE id = ?", (d, id))
+    if day == 4:
+        d = user_data['thursday']
+        cur.execute("UPDATE users SET thursday = ? WHERE id = ?", (d, id))
+    if day == 5:
+        d = user_data['friday']
+        cur.execute("UPDATE users SET friday = ? WHERE id = ?", (d, id))
+    con.commit()
+    con.close()
 
 
 def check_user_status(user_id):
@@ -33,7 +58,12 @@ def check_user_status(user_id):
                     'patronymic, '
                     'surname, '
                     'car, '
-                    'status) VALUES (?, ?, ?, ?, ?, ?)', (user_id, None, None, None, None, 1))
+                    'status,'
+                    'monday,'
+                    'tuesday,'
+                    'wednesday,'
+                    'thursday,'
+                    'friday) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (user_id, None, None, None, None, 1, False, False, False, False, False))
         con.commit()
         con.close()
         return 1
@@ -57,6 +87,5 @@ def take_data(user_id):
     cur = con.cursor()
     data = cur.execute('SELECT * FROM users WHERE id=?', (user_id,)).fetchone()
     con.close()
+    data = {'id': data[0], 'name': data[1], 'patronymic': data[2], 'surname': data[3], 'car': data[4], 'monday': data[6], 'tuesday': data[7], 'wednesday': data[8], 'thursday': data[9], 'friday': data[10]}
     return data
-
-# add_user_data({'id': 123, 'name': 'asasdsasda', 'patronymic': 'asdfasdf', 'surname': 'ffkdd', 'car': '123asd'})
