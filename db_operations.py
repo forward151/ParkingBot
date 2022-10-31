@@ -1,13 +1,7 @@
 import sqlite3
 
-def add_user_data(user_data):
-    id = user_data['id']
-    sn = user_data['surname']
-    nm = user_data['name']
-    pt = user_data['patronymic']
-    cr = user_data['car']
 
-
+def clear_data():
     con = sqlite3.connect("database.db")
 
     cur = con.cursor()
@@ -18,6 +12,18 @@ def add_user_data(user_data):
     cur.execute("UPDATE users SET name = ?, patronymic = ?, surname = ?,"
                 "car = ?, status = ? WHERE id = ?", (nm, pt, sn, cr, 6, id))
     con.commit()
+    con.close()
+
+
+def add_user_data(user_data):
+    con = sqlite3.connect("database.db")
+
+    cur = con.cursor()
+    data_list = cur.execute('SELECT * FROM users').fetchall()
+    for i in data_list:
+        cur.execute("UPDATE users SET monday = ?, tuesday = ?, wednesday = ?,"
+                    "thursday = ?, friday = ? WHERE id = ?", (0, 0, 0, 0, 0, i[0]))
+        con.commit()
     con.close()
 
 

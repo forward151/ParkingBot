@@ -4,10 +4,10 @@ from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
 import csv
 import time
 from datetime import datetime
-from db_operations import check_user_status, add_user_data, take_data, change_user_status, add_date_for_user
+from db_operations import check_user_status, add_user_data, take_data, change_user_status, add_date_for_user, clear_data
 
 DELTA_TIME = [1, 0, 2]
-START_TIME = [17, 37]
+START_TIME = [21, 36]
 WEEK_LST = []
 
 
@@ -58,7 +58,7 @@ class Bot:
                 user_status = check_user_status(user_id)
                 print(user_status)
                 if text == 'Забронировать место на понедельник' and user_status == 6:
-                    if self.free['monday'] >= 10:
+                    if self.free['monday'] >= self.max_num:
                         context.bot.send_message(chat_id=user_id,
                                                  text='К сожалению, все места на понедельник заняты')
                         return
@@ -97,7 +97,7 @@ class Bot:
                         self.result_list[idx]['monday'] = 0
                         self.free['monday'] -= 1
                 elif text == 'Забронировать место на вторник' and user_status == 6:
-                    if self.free['tuesday'] >= 10:
+                    if self.free['tuesday'] >= self.max_num:
                         context.bot.send_message(chat_id=user_id,
                                                  text='К сожалению, все места на вторник заняты')
                         return
@@ -135,7 +135,7 @@ class Bot:
                         self.result_list[idx]['tuesday'] = 0
                         self.free['tuesday'] -= 1
                 elif text == 'Забронировать место на среду' and user_status == 6:
-                    if self.free['wednesday'] >= 10:
+                    if self.free['wednesday'] >= self.max_num:
                         context.bot.send_message(chat_id=user_id,
                                                  text='К сожалению, все места на среду заняты')
                         return
@@ -173,7 +173,7 @@ class Bot:
                         self.result_list[idx]['wednesday'] = 0
                         self.free['wednesday'] -= 1
                 elif text == 'Забронировать место на четверг' and user_status == 6:
-                    if self.free['thursday'] >= 10:
+                    if self.free['thursday'] >= self.max_num:
                         context.bot.send_message(chat_id=user_id,
                                                  text='К сожалению, все места на четверг заняты')
                         return
@@ -211,7 +211,7 @@ class Bot:
                         self.result_list[idx]['thursday'] = 0
                         self.free['thursday'] -= 1
                 elif text == 'Забронировать место на пятницу' and user_status == 6:
-                    if self.free['friday'] >= 10:
+                    if self.free['friday'] >= self.max_num:
                         context.bot.send_message(chat_id=user_id,
                                                  text='К сожалению, все места на пятницу заняты')
                         return
@@ -331,22 +331,28 @@ class Bot:
         fst_key = False
         scd_key = False
         thd_key = False
+        not_clear_data = True
         while True:
             h = datetime.now().hour
             m = datetime.now().minute
             wd = datetime.now().weekday()
+            if wd == 5 and not_clear_data:
+                clear_data()
             if h == START_TIME[0] and m == START_TIME[1] and wd not in WEEK_LST and fst_key is False:
                 self.warning_message(self.dp)
                 fst_key = True
                 scd_key = False
+                not_clear_data = False
             if h == START_TIME[0] and m == START_TIME[1] + DELTA_TIME[0] and wd not in WEEK_LST and scd_key is False:
                 self.open_message(self.dp)
                 scd_key = True
                 thd_key = False
+                not_clear_data = False
             if h == START_TIME[0] + DELTA_TIME[1] and m == START_TIME[1] + DELTA_TIME[2] and wd not in WEEK_LST and thd_key is False:
                 self.close_message(self.dp)
                 thd_key = True
                 fst_key = False
+                not_clear_data = False
 
             time.sleep(5)
 
