@@ -338,6 +338,7 @@ class Bot:
             wd = datetime.now().weekday()
             if wd == 5 and not_clear_data:
                 clear_data()
+                self.free = {'monday': 0, 'tuesday': 0, 'wednesday': 0, 'thursday': 0, 'friday': 0}
             if h == START_TIME[0] and m == START_TIME[1] and wd not in WEEK_LST and fst_key is False:
                 self.warning_message(self.dp)
                 fst_key = True
