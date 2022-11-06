@@ -1,21 +1,25 @@
 import sqlite3
 
 
-def clear_data():
+def add_user_data(user_data):
+    cr = user_data['car']
+    nm = user_data['name']
+    pt = user_data['patronymic']
+    sn = user_data['surname']
+    uid = user_data['id']
     con = sqlite3.connect("database.db")
-
     cur = con.cursor()
     data_list = cur.execute('SELECT * FROM users').fetchall()
     for i in data_list:
         if i[0] != id and i[4] == cr:
             return
     cur.execute("UPDATE users SET name = ?, patronymic = ?, surname = ?,"
-                "car = ?, status = ? WHERE id = ?", (nm, pt, sn, cr, 6, id))
+                "car = ?, status = ? WHERE id = ?", (nm, pt, sn, cr, 6, uid))
     con.commit()
     con.close()
 
 
-def add_user_data(user_data):
+def clear_data():
     con = sqlite3.connect("database.db")
 
     cur = con.cursor()

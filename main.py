@@ -7,7 +7,7 @@ from datetime import datetime
 from db_operations import check_user_status, add_user_data, take_data, change_user_status, add_date_for_user, clear_data
 
 DELTA_TIME = [1, 0, 2]
-START_TIME = [21, 36]
+START_TIME = [21, 7]
 WEEK_LST = []
 
 
@@ -280,6 +280,7 @@ class Bot:
                         context.bot.send_message(chat_id=user_id, text='Регистрация завершена. Теперь вы можете забронировать место',
                                                   reply_markup=ReplyKeyboardMarkup(self.add_keyboard))
                         change_user_status(user_id, 6)
+                        print(self.user_data)
                         add_user_data(self.user_data[user_id])
 
 
