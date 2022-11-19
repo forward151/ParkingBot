@@ -5,9 +5,10 @@ import csv
 import time
 from datetime import datetime
 from db_operations import check_user_status, add_user_data, take_data, change_user_status, add_date_for_user, clear_data
+import pandas as pd
 
 DELTA_TIME = [1, 0, 2]
-START_TIME = [21, 7]
+START_TIME = [19, 3]
 WEEK_LST = []
 
 
@@ -33,14 +34,25 @@ class Bot:
         ]
 
     def file_operator(self):
-        file = open('data.csv', 'w')
-        writer = csv.writer(file)
-        writer.writerow(['tg_id', 'name', 'patronymic', 'surname', 'car_number', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday'])
-        for i in self.result_list:
-            writer.writerow([i['id'], i['name'], i['patronymic'], i['surname'], i['car'], i['monday'], i['tuesday'], i['wednesday'], i['thursday'], i['friday']])
-
-        file.close()
-
+        # file = open('data.csv', 'w')
+        # writer = csv.writer(file)
+        # writer.writerow(['tg_id', 'name', 'patronymic', 'surname', 'car_number', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday'])
+        # for i in self.result_list:
+        #     writer.writerow([i['id'], i['name'], i['patronymic'], i['surname'], i['car'], i['monday'], i['tuesday'], i['wednesday'], i['thursday'], i['friday']])
+        #
+        # file.close()
+        df = pd.DataFrame({
+            'name': [i['name'] for i in self.result_list],
+            'patronymic': [i['patronymic'] for i in self.result_list],
+            'surname': [i['surname'] for i in self.result_list],
+            'car_number': [i['car'] for i in self.result_list],
+            'monday': [i['monday'] for i in self.result_list],
+            'tuesday': [i['tuesday'] for i in self.result_list],
+            'wednesday': [i['wednesday'] for i in self.result_list],
+            'thursday': [i['thursday'] for i in self.result_list],
+            'friday': [i['friday'] for i in self.result_list]
+        })
+        df.to_excel('data.xlsx')
 
 
 
