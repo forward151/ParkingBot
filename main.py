@@ -64,6 +64,7 @@ class Bot:
         if user_id == self.admin_id:
             self.users_ids.append(int(text))
             context.bot.send_message(chat_id=user_id, text='Пользователь добавлен')
+            return
 
         if user_id not in self.users_ids:
             context.bot.send_message(chat_id=user_id, text='К сожалению, у вас нет прав регистрации на автостоянку')
