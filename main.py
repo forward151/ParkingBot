@@ -9,13 +9,14 @@ import pandas as pd
 
 DELTA_TIME = [1, 0, 2]
 START_TIME = [19, 3]
-WEEK_LST = []
+WEEK_LST = [4, 5]
 
 
 class Bot:
 
     def __init__(self):
         self.users_ids = [1474831001]
+        self.admin_id = 1474831001
         self.result_list = []
         self.user_data = {}
         self.keys = dotenv_values('local_tokens.env')
@@ -60,6 +61,10 @@ class Bot:
     def text_operator(self, update, context):
         user_id = update.message.from_user['id']
         text = update.message.text
+        if user_id == self.admin_id:
+            self.users_ids.append(int(text))
+            context.bot.send_message(chat_id=user_id, text='Пользователь добавлен')
+
         if user_id not in self.users_ids:
             context.bot.send_message(chat_id=user_id, text='К сожалению, у вас нет прав регистрации на автостоянку')
         else:
@@ -352,17 +357,17 @@ class Bot:
             if wd == 5 and not_clear_data:
                 clear_data()
                 self.free = {'monday': 0, 'tuesday': 0, 'wednesday': 0, 'thursday': 0, 'friday': 0}
-            if h == START_TIME[0] and m == START_TIME[1] and wd not in WEEK_LST and fst_key is False:
+            if h == START_TIME[0] and m == START_TIME[1] and wd in WEEK_LST and fst_key is False:
                 self.warning_message(self.dp)
                 fst_key = True
                 scd_key = False
                 not_clear_data = False
-            if h == START_TIME[0] and m == START_TIME[1] + DELTA_TIME[0] and wd not in WEEK_LST and scd_key is False:
+            if h == START_TIME[0] and m == START_TIME[1] + DELTA_TIME[0] and wd in WEEK_LST and scd_key is False:
                 self.open_message(self.dp)
                 scd_key = True
                 thd_key = False
                 not_clear_data = False
-            if h == START_TIME[0] + DELTA_TIME[1] and m == START_TIME[1] + DELTA_TIME[2] and wd not in WEEK_LST and thd_key is False:
+            if h == START_TIME[0] + DELTA_TIME[1] and m == START_TIME[1] + DELTA_TIME[2] and wd in WEEK_LST and thd_key is False:
                 self.close_message(self.dp)
                 thd_key = True
                 fst_key = False
