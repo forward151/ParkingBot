@@ -62,9 +62,27 @@ class Bot:
         user_id = update.message.from_user['id']
         text = update.message.text
         if user_id == self.admin_id:
-            self.users_ids.append(int(text))
-            context.bot.send_message(chat_id=user_id, text='Пользователь добавлен')
-            return
+            try:
+                symb = str(text.split(' ')[0])
+                text = int(text.split(' ')[1])
+                if symb == '+':
+                    self.users_ids.append(text)
+                    context.bot.send_message(chat_id=user_id, text='Пользователь добавлен')
+                elif symb == '-':
+                    if text in self.users_ids:
+                        self.users_ids.remove(text)
+                        context.bot.send_message(chat_id=user_id, text='Пользователь удален')
+                    else:
+                        context.bot.send_message(chat_id=user_id, text='Пользователя не существует')
+                else:
+                    context.bot.send_message(chat_id=user_id, text='Повторите ввод')
+
+                return
+            except BaseException:
+                context.bot.send_message(chat_id=user_id, text='Повторите ввод')
+                return
+
+
 
         if user_id not in self.users_ids:
             context.bot.send_message(chat_id=user_id, text='К сожалению, у вас нет прав регистрации на автостоянку')
