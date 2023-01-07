@@ -352,7 +352,7 @@ class Bot:
         self.file_operator()
 
     def warning_message(self, context: CallbackContext):
-        self.result_list = []
+        #self.result_list = []
         for user_id in self.users_ids:
             try:
                 context.bot.send_message(chat_id=user_id,
