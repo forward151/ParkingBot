@@ -35,13 +35,6 @@ class Bot:
         ]
 
     def file_operator(self):
-        # file = open('data.csv', 'w')
-        # writer = csv.writer(file)
-        # writer.writerow(['tg_id', 'name', 'patronymic', 'surname', 'car_number', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday'])
-        # for i in self.result_list:
-        #     writer.writerow([i['id'], i['name'], i['patronymic'], i['surname'], i['car'], i['monday'], i['tuesday'], i['wednesday'], i['thursday'], i['friday']])
-        #
-        # file.close()
         df = pd.DataFrame({
             'name': [i['name'] for i in self.result_list],
             'patronymic': [i['patronymic'] for i in self.result_list],
@@ -352,7 +345,7 @@ class Bot:
         self.file_operator()
 
     def warning_message(self, context: CallbackContext):
-        #self.result_list = []
+        self.result_list = []
         for user_id in self.users_ids:
             try:
                 context.bot.send_message(chat_id=user_id,
