@@ -7,9 +7,9 @@ from datetime import datetime
 from db_operations import check_user_status, add_user_data, take_data, change_user_status, add_date_for_user, clear_data
 import pandas as pd
 
-DELTA_TIME = [1, 0, 2]
-START_TIME = [19, 3]
-WEEK_LST = [4, 5]
+DELTA_TIME = [0, 1, 0, 1]
+START_TIME = [17, 53]
+WEEK_LST = [4, 5, 6]
 
 
 class Bot:
@@ -374,12 +374,12 @@ class Bot:
                 fst_key = True
                 scd_key = False
                 not_clear_data = False
-            if h == START_TIME[0] and m == START_TIME[1] + DELTA_TIME[0] and wd in WEEK_LST and scd_key is False:
+            if h == START_TIME[0] + DELTA_TIME[0] and m == START_TIME[1] + DELTA_TIME[1] and wd in WEEK_LST and scd_key is False:
                 self.open_message(self.dp)
                 scd_key = True
                 thd_key = False
                 not_clear_data = False
-            if h == START_TIME[0] + DELTA_TIME[1] and m == START_TIME[1] + DELTA_TIME[2] and wd in WEEK_LST and thd_key is False:
+            if h == START_TIME[0] + DELTA_TIME[2] and m == START_TIME[1] + DELTA_TIME[3] and wd in WEEK_LST and thd_key is False:
                 self.close_message(self.dp)
                 thd_key = True
                 fst_key = False
